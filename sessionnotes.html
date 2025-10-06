@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Session Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Full height textarea for comfortable writing */
+        #notes-area {
+            height: calc(100vh - 120px); /* Adjust based on header height */
+            resize: none;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-800">Session Notes: The Stonebreaker's Journal</h1>
+            <p class="text-slate-600 mt-2">Notes are automatically saved to your browser as you type.</p>
+        </header>
+
+        <div class="bg-white p-4 rounded-lg shadow-xl border border-slate-200">
+            <textarea 
+                id="notes-area" 
+                class="w-full p-4 border border-slate-300 rounded-lg focus:ring-slate-500 focus:border-slate-500 text-slate-700 text-base" 
+                placeholder="Start logging your adventure here.&#10;&#10;-- Session [Date] --&#10;Key NPCs encountered: &#10;Locations visited: &#10;New duties accepted: &#10;Threats contained: ">
+            </textarea>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const notesArea = document.getElementById('notes-area');
+            const STORAGE_KEY = 'throom_session_notes';
+
+            // Function to load notes from local storage
+            const loadNotes = () => {
+                const savedNotes = localStorage.getItem(STORAGE_KEY);
+                if (savedNotes) {
+                    notesArea.value = savedNotes;
+                }
+            };
+
+            // Function to save notes to local storage
+            const saveNotes = () => {
+                localStorage.setItem(STORAGE_KEY, notesArea.value);
+            };
+
+            // Load notes immediately on page load
+            loadNotes();
+
+            // Save notes whenever the user types (with a slight delay via input event)
+            notesArea.addEventListener('input', saveNotes);
+        });
+    </script>
+
+</body>
+</html>
