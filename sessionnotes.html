@@ -12,9 +12,9 @@
       font-family: 'Inter', sans-serif;
       transition: background-color 0.4s, color 0.4s;
     }
-    /* Ensure both the notes area and preview panel have the same height */
+    /* INCREASED NOTES AREA HEIGHT by reducing the fixed offset from 300px to 250px */
     #notes-area, #preview {
-      height: calc(100vh - 300px);
+      height: calc(100vh - 250px);
       overflow-y: auto; /* Enable scrolling for long content */
       resize: none;
     }
@@ -57,37 +57,43 @@
   </style>
 </head>
 <body class="bg-stone-100 text-slate-800">
-  <div class="container mx-auto p-4 md:p-8 max-w-5xl">
-    <header class="text-center mb-6">
-      <h1 class="text-3xl md:text-4xl font-bold mb-2">Session Notes: The Stonebreaker's Journal</h1>
-      <p id="status-message" class="text-slate-600 dark-mode:text-slate-400 mb-4">Notes are automatically saved to your browser as you type.</p>
-      <div class="flex flex-wrap justify-center gap-2">
-        <button id="save-btn" class="px-3 py-1.5 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">💾 Save</button>
-        <button id="download-btn" class="px-3 py-1.5 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">⬇️ Download</button>
-        <button id="timestamp-btn" class="px-3 py-1.5 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">🕒 Timestamp</button>
-        <button id="clear-btn" class="px-3 py-1.5 text-sm bg-red-500 text-white rounded hover:bg-red-600">❌ Clear</button>
-        <button id="preview-toggle" class="px-3 py-1.5 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">👁️ Preview</button>
-        <button id="dark-toggle" class="px-3 py-1.5 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">🌙 Dark Mode</button>
+    
+  <div class="container mx-auto p-4 max-w-5xl">
+    <!-- REDUCED HEADER MARGIN FROM mb-4 to mb-2 -->
+    <header class="text-center mb-2">
+      <h1 class="text-2xl md:text-3xl font-bold mb-0">Session Notes: The Stonebreaker's Journal</h1>
+      <p id="status-message" class="text-slate-600 dark-mode:text-slate-400 text-xs mb-3">Notes are automatically saved to your browser as you type.</p>
+      <!-- REDUCED BUTTON GAP FROM gap-1 to gap-[1px] for minimal spacing -->
+      <div class="flex flex-wrap justify-center gap-[1px]">
+        <!-- REDUCED BUTTON PADDING FROM px-3 py-1.5 TO px-2.5 py-1 -->
+        <button id="save-btn" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">💾 Save</button>
+        <button id="download-btn" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">⬇️ Download</button>
+        <button id="timestamp-btn" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">🕒 Timestamp</button>
+        <button id="clear-btn" class="px-2.5 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">❌ Clear</button>
+        <button id="preview-toggle" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">👁️ Preview</button>
+        <button id="dark-toggle" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">🌙 Dark Mode</button>
       </div>
     </header>
 
     <div class="bg-white p-4 rounded-lg shadow-xl border border-slate-200">
       <div id="editor-container">
-        <div id="toolbar" class="flex flex-wrap gap-1 mb-2">
-          <button data-format="bold" title="Bold (Ctrl/Cmd+B)" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 rounded">B</button>
-          <button data-format="italic" title="Italic (Ctrl/Cmd+I)" class="toolbar-btn px-2 py-1 text-sm italic bg-slate-200 rounded">I</button>
-          <button data-format="underline" title="Underline" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 rounded">U</button>
-          <button data-format="strike" title="Strikethrough" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 rounded">S</button>
-          <select id="heading-select" class="px-2 py-1 text-sm bg-slate-200 rounded">
+        <!-- REDUCED TOOLBAR GAP FROM gap-1 to gap-[1px] for minimal spacing -->
+        <div id="toolbar" class="flex flex-wrap gap-[1px] mb-2">
+          <!-- REDUCED TOOLBAR BUTTON PADDING FROM px-2 py-1 TO px-1.5 py-0.5 -->
+          <button data-format="bold" title="Bold (Ctrl/Cmd+B)" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">B</button>
+          <button data-format="italic" title="Italic (Ctrl/Cmd+I)" class="toolbar-btn px-1.5 py-0.5 text-sm italic bg-slate-200 rounded">I</button>
+          <button data-format="underline" title="Underline" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">U</button>
+          <button data-format="strike" title="Strikethrough" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">S</button>
+          <select id="heading-select" class="px-1.5 py-0.5 text-sm bg-slate-200 rounded">
             <option value="">Normal</option>
             <option value="h1">H1</option>
             <option value="h2">H2</option>
             <option value="h3">H3</option>
           </select>
-          <button data-format="list" title="List" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 rounded">• List</button>
-          <button data-format="quote" title="Quote" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 rounded">❝</button>
-          <button data-format="code" title="Code Inline" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 rounded">{ }</button>
-          <button data-format="divider" title="Divider" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 rounded">―</button>
+          <button data-format="list" title="List" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">• List</button>
+          <button data-format="quote" title="Quote" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">❝</button>
+          <button data-format="code" title="Code Inline" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">{ }</button>
+          <button data-format="divider" title="Divider" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">―</button>
         </div>
         <textarea id="notes-area" class="w-full p-4 border border-slate-300 rounded-lg focus:ring-slate-500 focus:border-slate-500 text-slate-700 text-base" placeholder="Start logging your adventure here...\n\n-- Session [Date] --\nKey NPCs: \nLocations: \nEvents:"></textarea>
         <div id="preview" class="hidden w-full p-4 border border-slate-300 rounded-lg prose prose-slate max-w-none"></div>
@@ -132,6 +138,27 @@
         updateWordCount();
         notesArea.focus(); // Auto-focus on load for seamless start
       };
+
+      // FIX: Added the missing downloadNotes function
+      const downloadNotes = () => {
+        const text = notesArea.value;
+        const filename = 'DnD_Session_Notes_' + new Date().toISOString().slice(0, 10) + '.md';
+
+        // Create a Blob containing the text content as Markdown
+        const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        // Create a temporary anchor element to trigger the download
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+
+        // Trigger the download and clean up
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
 
       const handleClear = () => {
         const modalId = 'clear-modal';
@@ -185,8 +212,6 @@
         }, 10);
       };
       
-      // ... (other helper functions like insertAtCursor, handleKeyDown, etc. remain the same) ...
-
       const insertAtCursor = (before, after = before) => {
         const start = notesArea.selectionStart;
         const end = notesArea.selectionEnd;
@@ -293,7 +318,8 @@
         tagMap.forEach((id, tag) => {
             const tagWithAt = `@${tag}`;
             // The target span uses the ID and highlights the tag.
-            const targetSpan = `<span id="${id}" class="scroll-target font-bold bg-yellow-100 text-yellow-800 dark-mode:bg-yellow-900/50 p-0.5 rounded">${tagWithAt}</span>`;
+            // Using a slightly stronger background here for visibility
+            const targetSpan = `<span id="${id}" class="scroll-target font-bold bg-yellow-200 text-yellow-900 dark-mode:bg-yellow-700/50 p-0.5 rounded">${tagWithAt}</span>`;
 
             // Find the first index of the raw tag string in the rendered HTML
             const firstIndex = renderedHtml.indexOf(tagWithAt);
