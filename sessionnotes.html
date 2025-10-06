@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D&D Session Notes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,10 +13,27 @@
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Full height textarea for comfortable writing */
         #notes-area {
-            height: calc(100vh - 120px); /* Adjust based on header height */
+            height: calc(100vh - 250px);
             resize: none;
+        }
+        @media (max-width: 768px) {
+            #notes-area {
+                height: calc(100vh - 300px);
+            }
+        }
+        .text-sm { font-size: 0.875rem; }
+        .text-base { font-size: 1rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        #preview-area {
+            display: none;
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+        .toolbar-btn, .font-size-btn, .control-btn {
+            user-select: none;
         }
     </style>
 </head>
@@ -24,41 +42,249 @@
     <div class="container mx-auto p-4 md:p-8 max-w-5xl">
         <header class="text-center mb-6">
             <h1 class="text-3xl md:text-4xl font-bold text-slate-800">Session Notes: The Stonebreaker's Journal</h1>
-            <p class="text-slate-600 mt-2">Notes are automatically saved to your browser as you type.</p>
+            <p id="status-message" class="text-slate-600 mt-2 transition-opacity duration-300">
+                Notes are automatically saved to your browser as you type.
+            </p>
+            
+            <div class="mt-4 flex flex-wrap justify-center items-center space-x-2">
+                <button id="save-btn" class="control-btn px-3 py-1.5 text-sm bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition" title="Manually save notes">
+                    💾 Save
+                </button>
+                <button id="timestamp-btn" class="control-btn px-3 py-1.5 text-sm bg-amber-500 text-white font-semibold rounded hover:bg-amber-600 transition" title="Insert session timestamp">
+                    🕓 Timestamp
+                </button>
+                <button id="download-btn" class="control-btn px-3 py-1.5 text-sm bg-slate-700 text-white font-semibold rounded hover:bg-slate-800 transition" title="Download notes as .txt">
+                    ⬇️ Download
+                </button>
+                <button id="clear-btn" class="control-btn px-3 py-1.5 text-sm bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition" title="Clear all notes">
+                    ❌ Clear
+                </button>
+                <button id="preview-btn" class="control-btn px-3 py-1.5 text-sm bg-indigo-500 text-white font-semibold rounded hover:bg-indigo-600 transition" title="Toggle preview mode">
+                    👁️ Preview
+                </button>
+
+                <div id="formatting-toolbar" class="flex space-x-1 border-l border-slate-300 ml-2 pl-2">
+                    <button data-format="bold" class="toolbar-btn px-2 py-1.5 text-sm font-bold bg-slate-200 text-slate-800 rounded hover:bg-slate-300 transition" title="Bold (Ctrl+B)" aria-label="Bold">B</button>
+                    <button data-format="italic" class="toolbar-btn px-2 py-1.5 text-sm italic bg-slate-200 text-slate-800 rounded hover:bg-slate-300 transition" title="Italic (Ctrl+I)" aria-label="Italic">I</button>
+                    <button data-format="heading" class="toolbar-btn px-2 py-1.5 text-sm bg-slate-200 text-slate-800 rounded hover:bg-slate-300 transition" title="Heading (##)" aria-label="Heading">H1</button>
+                    <button data-format="list" class="toolbar-btn px-2 py-1.5 text-sm bg-slate-200 text-slate-800 rounded hover:bg-slate-300 transition" title="List (- item)" aria-label="List">List</button>
+                </div>
+                
+                <div class="flex space-x-1 border-l border-slate-300 ml-2 pl-2">
+                    <button data-size="down" class="font-size-btn px-2 py-1.5 text-sm bg-slate-200 text-slate-800 rounded hover:bg-slate-300 transition" title="Decrease font size" aria-label="Font size down">A-</button>
+                    <button data-size="up" class="font-size-btn px-2 py-1.5 text-sm bg-slate-200 text-slate-800 rounded hover:bg-slate-300 transition" title="Increase font size" aria-label="Font size up">A+</button>
+                </div>
+            </div>
         </header>
 
         <div class="bg-white p-4 rounded-lg shadow-xl border border-slate-200">
+            <label for="notes-area" class="sr-only">Session Notes</label>
             <textarea 
                 id="notes-area" 
                 class="w-full p-4 border border-slate-300 rounded-lg focus:ring-slate-500 focus:border-slate-500 text-slate-700 text-base" 
                 placeholder="Start logging your adventure here.&#10;&#10;-- Session [Date] --&#10;Key NPCs encountered: &#10;Locations visited: &#10;New duties accepted: &#10;Threats contained: ">
             </textarea>
+            <div id="preview-area" class="prose max-w-none text-slate-700 p-4 border border-slate-200 rounded-lg bg-stone-50"></div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const notesArea = document.getElementById('notes-area');
+            const previewArea = document.getElementById('preview-area');
+            const saveBtn = document.getElementById('save-btn');
+            const timestampBtn = document.getElementById('timestamp-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const previewBtn = document.getElementById('preview-btn');
+            const statusMessage = document.getElementById('status-message');
+            const toolbarBtns = document.querySelectorAll('.toolbar-btn');
+            const fontSizeBtns = document.querySelectorAll('.font-size-btn');
             const STORAGE_KEY = 'throom_session_notes';
+            const FONT_SIZE_KEY = 'throom_notes_fontsize';
+            const PREVIEW_MODE_KEY = 'throom_notes_preview';
+            const FONT_SIZES = ['text-sm', 'text-base', 'text-lg', 'text-xl', 'text-2xl'];
+            const md = window.markdownit();
 
-            // Function to load notes from local storage
+            // --- Utility Functions ---
+            const debounce = (func, delay) => {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => func(...args), delay);
+                };
+            };
+
+            const getCursor = () => notesArea.selectionStart;
+            const setCursor = (pos) => notesArea.selectionStart = notesArea.selectionEnd = pos;
+
+            const wrapSelection = (prefix, suffix = prefix) => {
+                const start = notesArea.selectionStart;
+                const end = notesArea.selectionEnd;
+                const selectedText = notesArea.value.substring(start, end);
+                notesArea.value = 
+                    notesArea.value.substring(0, start) +
+                    prefix + selectedText + suffix +
+                    notesArea.value.substring(end);
+                if (start === end) setCursor(start + prefix.length);
+                else {
+                    notesArea.selectionStart = start;
+                    notesArea.selectionEnd = end + prefix.length + suffix.length;
+                }
+                notesArea.focus();
+                saveNotes();
+            };
+
+            // --- Local Storage ---
             const loadNotes = () => {
                 const savedNotes = localStorage.getItem(STORAGE_KEY);
-                if (savedNotes) {
-                    notesArea.value = savedNotes;
+                if (savedNotes) notesArea.value = savedNotes;
+
+                const savedSize = localStorage.getItem(FONT_SIZE_KEY);
+                if (savedSize) setFontSizeClass(savedSize);
+
+                const savedPreview = localStorage.getItem(PREVIEW_MODE_KEY);
+                if (savedPreview === 'true') togglePreview(true);
+            };
+
+            const saveNotes = () => {
+                localStorage.setItem(STORAGE_KEY, notesArea.value);
+                statusMessage.textContent = "✅ Auto-Saved to browser.";
+                setTimeout(() => {
+                    statusMessage.textContent = "Notes are automatically saved to your browser as you type.";
+                }, 1500);
+                if (previewArea.style.display === 'block') renderPreview();
+            };
+
+            const clearNotes = () => {
+                if (confirm("Are you sure you want to clear ALL session notes? This cannot be undone.")) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    notesArea.value = "";
+                    statusMessage.textContent = "🗑️ Notes cleared.";
+                    setTimeout(() => {
+                        statusMessage.textContent = "Notes are automatically saved to your browser as you type.";
+                    }, 2000);
+                    renderPreview();
                 }
             };
 
-            // Function to save notes to local storage
-            const saveNotes = () => {
-                localStorage.setItem(STORAGE_KEY, notesArea.value);
+            // --- Manual Save & Download ---
+            const manualSave = () => {
+                saveNotes();
+                statusMessage.textContent = "💾 Notes saved manually.";
+                setTimeout(() => {
+                    statusMessage.textContent = "Notes are automatically saved to your browser as you type.";
+                }, 2000);
             };
 
-            // Load notes immediately on page load
-            loadNotes();
+            const downloadNotes = () => {
+                const notesContent = notesArea.value;
+                if (!notesContent.trim()) return alert("The notes area is empty.");
+                const filename = `DND_Session_Notes_${new Date().toISOString().slice(0,10)}.txt`;
+                const blob = new Blob([notesContent], { type: 'text/plain;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+                statusMessage.textContent = "⬇️ File downloaded.";
+                setTimeout(() => {
+                    statusMessage.textContent = "Notes are automatically saved to your browser as you type.";
+                }, 3000);
+            };
 
-            // Save notes whenever the user types (with a slight delay via input event)
-            notesArea.addEventListener('input', saveNotes);
+            // --- Timestamp Insertion ---
+            const insertTimestamp = () => {
+                const timestamp = `\n\n-- Session ${new Date().toLocaleDateString()} --\n`;
+                const cursor = getCursor();
+                notesArea.value = 
+                    notesArea.value.substring(0, cursor) +
+                    timestamp +
+                    notesArea.value.substring(cursor);
+                setCursor(cursor + timestamp.length);
+                saveNotes();
+                statusMessage.textContent = "🕓 Timestamp added.";
+                setTimeout(() => {
+                    statusMessage.textContent = "Notes are automatically saved to your browser as you type.";
+                }, 2000);
+            };
+
+            // --- Formatting ---
+            const handleFormat = (event) => {
+                const format = event.currentTarget.dataset.format;
+                switch (format) {
+                    case 'bold': wrapSelection('**'); break;
+                    case 'italic': wrapSelection('*'); break;
+                    case 'heading':
+                        const start = notesArea.selectionStart;
+                        let lineStart = notesArea.value.lastIndexOf('\n', start - 1) + 1;
+                        notesArea.value = notesArea.value.substring(0, lineStart) + '## ' + notesArea.value.substring(lineStart);
+                        setCursor(start + 3);
+                        saveNotes();
+                        break;
+                    case 'list': wrapSelection('- ', ''); break;
+                }
+            };
+
+            // --- Font Size ---
+            const setFontSizeClass = (className) => {
+                notesArea.classList.remove(...FONT_SIZES);
+                notesArea.classList.add(className);
+                localStorage.setItem(FONT_SIZE_KEY, className);
+            };
+
+            const changeFontSize = (direction) => {
+                const currentClass = Array.from(notesArea.classList).find(c => FONT_SIZES.includes(c));
+                let currentIndex = FONT_SIZES.indexOf(currentClass);
+                if (direction === 'up' && currentIndex < FONT_SIZES.length - 1) currentIndex++;
+                else if (direction === 'down' && currentIndex > 0) currentIndex--;
+                setFontSizeClass(FONT_SIZES[currentIndex]);
+            };
+
+            // --- Preview Mode ---
+            const togglePreview = (force = null) => {
+                const isPreview = force !== null ? force : previewArea.style.display !== 'block';
+                if (isPreview) {
+                    renderPreview();
+                    previewArea.style.display = 'block';
+                    notesArea.style.display = 'none';
+                    previewBtn.textContent = "✏️ Edit";
+                    localStorage.setItem(PREVIEW_MODE_KEY, 'true');
+                } else {
+                    previewArea.style.display = 'none';
+                    notesArea.style.display = 'block';
+                    previewBtn.textContent = "👁️ Preview";
+                    localStorage.setItem(PREVIEW_MODE_KEY, 'false');
+                }
+            };
+
+            const renderPreview = () => {
+                previewArea.innerHTML = md.render(notesArea.value);
+            };
+
+            // --- Keyboard Shortcuts ---
+            notesArea.addEventListener('keydown', (e) => {
+                const isModifier = e.ctrlKey || e.metaKey; 
+                if (isModifier) {
+                    let handled = false;
+                    if (e.key === 'b' || e.key === 'B') { wrapSelection('**'); handled = true; }
+                    else if (e.key === 'i' || e.key === 'I') { wrapSelection('*'); handled = true; }
+                    if (handled) e.preventDefault();
+                }
+            });
+
+            // --- Initialization ---
+            loadNotes();
+            notesArea.addEventListener('input', debounce(saveNotes, 500));
+            saveBtn.addEventListener('click', manualSave);
+            downloadBtn.addEventListener('click', downloadNotes);
+            clearBtn.addEventListener('click', clearNotes);
+            timestampBtn.addEventListener('click', insertTimestamp);
+            previewBtn.addEventListener('click', () => togglePreview());
+            toolbarBtns.forEach(btn => btn.addEventListener('click', handleFormat));
+            fontSizeBtns.forEach(btn => btn.addEventListener('click', (e) => changeFontSize(e.currentTarget.dataset.size)));
         });
     </script>
 
