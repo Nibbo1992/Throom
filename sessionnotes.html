@@ -54,6 +54,16 @@
     .scroll-target {
         scroll-margin-top: 1.5rem; /* Offset for sticky headers if they existed, or just a little padding */
     }
+    /* Custom styling for dark mode button group borders to ensure visibility */
+    .dark-mode .header-btn {
+        border-color: #374151 !important; /* Darker border for separation */
+    }
+    .dark-mode .toolbar-btn, .dark-mode #heading-select {
+        border-color: #3f3f46 !important;
+    }
+    .dark-mode #clear-btn {
+        border-color: #991b1b !important; 
+    }
   </style>
 </head>
 <body class="bg-stone-100 text-slate-800">
@@ -63,37 +73,40 @@
     <header class="text-center mb-2">
       <h1 class="text-2xl md:text-3xl font-bold mb-0">Session Notes: The Stonebreaker's Journal</h1>
       <p id="status-message" class="text-slate-600 dark-mode:text-slate-400 text-xs mb-3">Notes are automatically saved to your browser as you type.</p>
-      <!-- REDUCED BUTTON GAP FROM gap-1 to gap-[1px] for minimal spacing -->
-      <div class="flex flex-wrap justify-center gap-[1px]">
-        <!-- REDUCED BUTTON PADDING FROM px-3 py-1.5 TO px-2.5 py-1 -->
-        <button id="save-btn" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">💾 Save</button>
-        <button id="download-btn" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">⬇️ Download</button>
-        <button id="timestamp-btn" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">🕒 Timestamp</button>
-        <button id="clear-btn" class="px-2.5 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">❌ Clear</button>
-        <button id="preview-toggle" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">👁️ Preview</button>
-        <button id="dark-toggle" class="px-2.5 py-1 text-sm bg-slate-700 text-white rounded hover:bg-slate-800">🌙 Dark Mode</button>
+      <!-- BUTTON GROUP: Removed gap-[1px], added overflow-hidden, rounded-lg, and shadow-md to container -->
+      <div class="flex flex-wrap justify-center mb-3 text-white shadow-md rounded-lg overflow-hidden">
+        <!-- Buttons now use border-r to separate, creating a continuous block effect -->
+        <button id="save-btn" class="header-btn px-3 py-2 text-sm bg-slate-700 hover:bg-slate-800 border-r border-slate-500/50">💾 <span class="hidden sm:inline">Save</span></button>
+        <button id="download-btn" class="header-btn px-3 py-2 text-sm bg-slate-700 hover:bg-slate-800 border-r border-slate-500/50">⬇️ <span class="hidden sm:inline">Download</span></button>
+        <button id="timestamp-btn" class="header-btn px-3 py-2 text-sm bg-slate-700 hover:bg-slate-800 border-r border-slate-500/50">🕒 <span class="hidden sm:inline">Timestamp</span></button>
+        <!-- Clear button is red and needs its own specific border color for the group effect -->
+        <button id="clear-btn" class="header-btn px-3 py-2 text-sm bg-red-600 hover:bg-red-700 border-r border-red-500/50">❌ <span class="hidden sm:inline">Clear</span></button>
+        <button id="preview-toggle" class="header-btn px-3 py-2 text-sm bg-slate-700 hover:bg-slate-800 border-r border-slate-500/50">👁️ <span class="hidden sm:inline">Preview</span></button>
+        <!-- Dark Mode button is the last in the group, no right border needed -->
+        <button id="dark-toggle" class="header-btn px-3 py-2 text-sm bg-slate-700 hover:bg-slate-800">🌙 <span class="hidden sm:inline">Dark Mode</span></button>
       </div>
     </header>
 
     <div class="bg-white p-4 rounded-lg shadow-xl border border-slate-200">
       <div id="editor-container">
-        <!-- REDUCED TOOLBAR GAP FROM gap-1 to gap-[1px] for minimal spacing -->
-        <div id="toolbar" class="flex flex-wrap gap-[1px] mb-2">
-          <!-- REDUCED TOOLBAR BUTTON PADDING FROM px-2 py-1 TO px-1.5 py-0.5 -->
-          <button data-format="bold" title="Bold (Ctrl/Cmd+B)" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">B</button>
-          <button data-format="italic" title="Italic (Ctrl/Cmd+I)" class="toolbar-btn px-1.5 py-0.5 text-sm italic bg-slate-200 rounded">I</button>
-          <button data-format="underline" title="Underline" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">U</button>
-          <button data-format="strike" title="Strikethrough" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">S</button>
-          <select id="heading-select" class="px-1.5 py-0.5 text-sm bg-slate-200 rounded">
+        <!-- TOOLBAR GROUP: Removed gap-[1px], added shadow-sm, rounded, and overflow-hidden -->
+        <div id="toolbar" class="flex flex-wrap mb-2 shadow-sm rounded overflow-hidden">
+          <!-- Buttons now use border-r to separate and are slightly larger for better touch targets -->
+          <button data-format="bold" title="Bold (Ctrl/Cmd+B)" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 hover:bg-slate-300 border-r border-slate-300">B</button>
+          <button data-format="italic" title="Italic (Ctrl/Cmd+I)" class="toolbar-btn px-2 py-1 text-sm italic bg-slate-200 hover:bg-slate-300 border-r border-slate-300">I</button>
+          <button data-format="underline" title="Underline" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 hover:bg-slate-300 border-r border-slate-300">U</button>
+          <button data-format="strike" title="Strikethrough" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 hover:bg-slate-300 border-r border-slate-300">S</button>
+          <select id="heading-select" class="px-2 py-1 text-sm bg-slate-200 hover:bg-slate-300 border-r border-slate-300 cursor-pointer">
             <option value="">Normal</option>
             <option value="h1">H1</option>
             <option value="h2">H2</option>
             <option value="h3">H3</option>
           </select>
-          <button data-format="list" title="List" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">• List</button>
-          <button data-format="quote" title="Quote" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">❝</button>
-          <button data-format="code" title="Code Inline" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">{ }</button>
-          <button data-format="divider" title="Divider" class="toolbar-btn px-1.5 py-0.5 text-sm bg-slate-200 rounded">―</button>
+          <button data-format="list" title="List" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 hover:bg-slate-300 border-r border-slate-300">•</button> 
+          <button data-format="quote" title="Quote" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 hover:bg-slate-300 border-r border-slate-300">❝</button>
+          <button data-format="code" title="Code Inline" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 hover:bg-slate-300 border-r border-slate-300">{ }</button>
+          <!-- Divider button is the last in the group -->
+          <button data-format="divider" title="Divider" class="toolbar-btn px-2 py-1 text-sm bg-slate-200 hover:bg-slate-300">―</button>
         </div>
         <textarea id="notes-area" class="w-full p-4 border border-slate-300 rounded-lg focus:ring-slate-500 focus:border-slate-500 text-slate-700 text-base" placeholder="Start logging your adventure here...\n\n-- Session [Date] --\nKey NPCs: \nLocations: \nEvents:"></textarea>
         <div id="preview" class="hidden w-full p-4 border border-slate-300 rounded-lg prose prose-slate max-w-none"></div>
@@ -238,7 +251,10 @@
       // --- Dark Mode Logic ---
 
       const updateDarkToggleIcon = (isDark) => {
-        darkToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        // Now only showing the icon on mobile, using span to hide the text
+        darkToggle.innerHTML = isDark 
+          ? '☀️ <span class="hidden sm:inline">Light Mode</span>' 
+          : '🌙 <span class="hidden sm:inline">Dark Mode</span>';
       };
 
       const toggleDark = () => {
@@ -371,12 +387,12 @@
           generateIndexAndRender(); // Generate and render content with index/tags
           notesArea.classList.add('hidden');
           preview.classList.remove('hidden');
-          previewToggle.textContent = '✏️ Edit';
+          previewToggle.innerHTML = '✏️ <span class="hidden sm:inline">Edit</span>';
         } else {
           // Show Editor
           preview.classList.add('hidden');
           notesArea.classList.remove('hidden');
-          previewToggle.textContent = '👁️ Preview';
+          previewToggle.innerHTML = '👁️ <span class="hidden sm:inline">Preview</span>';
           notesArea.focus(); // Return focus to the editor
         }
       };
