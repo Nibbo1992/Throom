@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throom: The Unwavering Shield - Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Stonework & Parchment -->
+    <!-- Application Structure Plan: The SPA is structured around a tab-based navigation system to provide rapid access to different facets of the character during a live game session. The default view is the 'Core Code' to constantly reinforce the character's foundational philosophy. The most crucial section is 'Interactive Scenarios,' which transforms the static tables into a quick-response tool: the user clicks a common in-game trigger (e.g., 'Ally is Hurt') and immediately gets Throom's detailed action protocol. This task-oriented design prioritizes speed and usability over the linear structure of the original document. Less frequently accessed, but still vital, information like 'Physicality/Voice' and the multi-step 'Rage Protocol' are organized into their own clear, easily digestible sections. This architecture is chosen to function as a performance tool, not a document to be read sequentially. -->
+    <!-- Visualization & Content Choices: Report Info: Core Axioms -> Goal: Inform/Reinforce -> Presentation: Prominent info cards -> Interaction: Static, always visible -> Justification: These are the core rules and must be front and center. | Report Info: Trigger/Response tables -> Goal: Organize/Inform on-demand -> Presentation: A grid of trigger buttons with a dynamic display area -> Interaction: Clicking a button populates the display with the corresponding response protocol -> Justification: This is the most efficient way for a player to find a specific reaction in the middle of a game. It's a quick-lookup system. | Report Info: Rage Protocol steps -> Goal: Organize/Show a Process -> Presentation: A horizontal stepper/flow diagram built with HTML/Tailwind -> Interaction: None, the visual flow communicates the sequence effectively -> Justification: Clearly visualizes the pre/during/post stages of this critical character moment. No charts or graphs are used as the data is entirely qualitative. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-btn.active {
+            background-color: #334155; /* slate-700 */
+            color: #f1f5f9; /* slate-100 */
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+        }
+        .trigger-btn.active {
+            background-color: #475569; /* slate-600 */
+            color: #f8fafc; /* slate-50 */
+            transform: scale(1.02);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-slate-800">
+
+    <div id="app" class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800">Throom: The Unwavering Shield</h1>
+            <p class="text-slate-600 mt-2">An Interactive Roleplaying Guide</p>
+        </header>
+
+        <nav class="flex flex-wrap justify-center gap-2 mb-8">
+            <button data-target="core-code" class="nav-btn active py-2 px-4 bg-white rounded-md shadow-sm border border-slate-200 hover:bg-slate-100">Core Code</button>
+            <button data-target="backstory" class="nav-btn py-2 px-4 bg-white rounded-md shadow-sm border border-slate-200 hover:bg-slate-100">Origin Story</button>
+            
+            <!-- NEW EXTERNAL LINK ADDED HERE -->
+            <a href="sessionnotes.html" class="nav-btn py-2 px-4 bg-white rounded-md shadow-sm border border-slate-200 hover:bg-slate-100" target="_blank">Session Notes</a>
+            
+            <button data-target="scenarios" class="nav-btn py-2 px-4 bg-white rounded-md shadow-sm border border-slate-200 hover:bg-slate-100">Interactive Scenarios</button>
+            <button data-target="physicality" class="nav-btn py-2 px-4 bg-white rounded-md shadow-sm border border-slate-200 hover:bg-slate-100">Physicality & Voice</button>
+            <button data-target="rage" class="nav-btn py-2 px-4 bg-white rounded-md shadow-sm border border-slate-200 hover:bg-slate-100">Rage Protocol</button>
+        </nav>
+
+        <main id="content">
+            <!-- Core Code Section -->
+            <section id="core-code" class="content-section">
+                <div class="text-center mb-8 p-4 bg-white/50 rounded-lg">
+                    <h2 class="text-2xl font-bold text-slate-700 mb-2">The Penance</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">These three axioms are the unshakable foundation of Throom's existence. Every action and reaction is a reflection of this self-imposed code of shame and duty. Keep these principles in mind above all else.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-slate-700">
+                        <h3 class="text-xl font-bold mb-2">My Strength is Weakness.</h3>
+                        <p class="text-sm text-slate-500 mb-4 italic">Reject success; all pride is a lie.</p>
+                        <p class="text-slate-700 font-semibold"><strong>Reflex:</strong> Reject praise. Immediately pivot to a mundane, physical duty. Never show pride or relief.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-red-800">
+                        <h3 class="text-xl font-bold mb-2">My Serenity is Rage.</h3>
+                        <p class="text-sm text-slate-500 mb-4 italic">Discipline is a failure waiting to happen.</p>
+                        <p class="text-slate-700 font-semibold"><strong>Reflex:</strong> Rage is shame. Show immense reluctance before, and immediate, silent withdrawal after.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-slate-700">
+                        <h3 class="text-xl font-bold mb-2">My Duty is Dishonor.</h3>
+                        <p class="text-sm text-slate-500 mb-4 italic">My pain and story are irrelevant; I am a tool for penance.</p>
+                        <p class="text-slate-700 font-semibold"><strong>Reflex:</strong> Deny injury. Repay any kindness or aid with hard, physical labor.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Backstory Section -->
+            <section id="backstory" class="content-section hidden">
+                <div class="text-center mb-8 p-4 bg-white/50 rounded-lg">
+                    <h2 class="text-2xl font-bold text-slate-700 mb-2">Origin: The Flaw Line</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">Understanding Throom begins with the story of his failure and exile, which informs his absolute self-imposed code of duty and dishonor.</p>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg space-y-6">
+                    <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-300 pb-2">The Flaw Line</h3>
+                    <p class="text-slate-700">Tholai was born into the Ogolakanu Clan, a singular Goliath community whose faith revolved around absolute, unmoving <strong>Serenity</strong>. As an apprentice stoneworker, he was taught that chaos was a betrayal of the spirit and that true strength was measured by unyielding peace. Yet, Tholai carried a terrifying, primal flaw: an uncontrollable <strong>Rage</strong> that felt like a flaw line in sacred stone. He struggled daily to contain the fury, knowing his very existence was an existential threat to his clan's beliefs.</p>
+
+                    <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-300 pb-2">Stonebreaker</h3>
+                    <p class="text-slate-700">The calamity came when raiders threatened the peaks. Tholai, losing control, unleashed his <strong>Rage</strong>. His fury crushed the enemy and saved his clan, but it simultaneously shattered the sacred silence and the stonework of his ancestral home. The Elders saw not a hero, but a spiritual failure—a contagion of chaos. The Chieftain gave him the shaming nickname <strong>"Stonebreaker"</strong> and cast him out, deeming him a liability whose reliance on brute force was a betrayal of their survival creed.</p>
+                    <p class="text-slate-700 border-l-4 border-slate-400 pl-4 italic">Exiled and dishonored, Tholai rejected his full name. He adopted the blunt, simple moniker <strong>"Throom,"</strong> choosing a sound that was empty of honor or history, befitting a man who saw himself as a mere weapon—a self-imposed punishment that affirmed his tragic code: "My strength is weakness. My serenity is rage. My duty is dishonor".</p>
+
+                    <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-300 pb-2">The Quest for the Purest Evil</h3>
+                    <p class="text-slate-700">Throom wandered the lands, using his terrifying strength only to uphold the duty he could not fulfill among his own kin: the protection of the innocent. However, Throom realized that helping common folk was insufficient penance; it did not justify the inherent dishonor of his existence. He became obsessed with a singular, terrible purpose: finding an evil so profound, so utterly corrupting, that his own contaminated power would be the only fitting weapon. He sought out <strong>Barovia</strong>, viewing its dark master, Strahd, as the ultimate problem that requires the ultimate, violent solution—<strong>The Purest Evil</strong>. He seeks to use his <strong>Rage</strong> to shatter this despair, offering his own destruction as the final, necessary sacrifice to achieve ultimate, paradoxical redemption.</p>
+                </div>
+            </section>
+
+            <!-- Interactive Scenarios Section -->
+            <section id="scenarios" class="content-section hidden">
+                <div class="text-center mb-8 p-4 bg-white/50 rounded-lg">
+                    <h2 class="text-2xl font-bold text-slate-700 mb-2">Conflict & Interaction Triggers</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">This section is your quick-reference tool for in-game events. Click a trigger below to see Throom's immediate, actionable response based on his core conflicts of shame, duty, and self-accusation.</p>
+                </div>
+                <div id="trigger-buttons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+                </div>
+                <div id="scenario-display" class="bg-white p-6 rounded-lg shadow-lg min-h-[200px] transition-opacity duration-300">
+                    <p class="text-slate-500 italic text-center pt-16">Select a scenario trigger above.</p>
+                </div>
+            </section>
+            
+            <!-- Physicality & Voice Section -->
+            <section id="physicality" class="content-section hidden">
+                 <div class="text-center mb-8 p-4 bg-white/50 rounded-lg">
+                    <h2 class="text-2xl font-bold text-slate-700 mb-2">Presence & Communication</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">Throom's character is conveyed almost entirely through his physical presence and minimalist communication. This section provides a reference for how he moves, fights, and speaks (or doesn't speak).</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800 border-b-2 border-slate-300 pb-2">Physicality: The Living Wall</h3>
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold">General Movement</h4>
+                                <p>Defined by **weight and resistance.** He shifts his mass; he does not run. His boots grind the earth. Always interposes his body between threat and ally.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold">The Greataxe (Combat)</h4>
+                                <p>A tool of **necessary chaos and shame.** Blows must shatter or annihilate. He retrieves the weapon with a sigh of discipline, not a cry of victory.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold">Environmental Tension</h4>
+                                <p>He must **fix a flawed reality.** In moments of stress, he imposes order: forcefully reseating a loose stone, neatly stacking firewood, or using his Mason's Chisel to smooth a jagged edge. Justified with tactical language: "A perimeter is clean."</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800 border-b-2 border-slate-300 pb-2">Voice: The Weight of Duty</h3>
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold">Tone & Delivery</h4>
+                                <p>Low, measured, gravelly, heavy. Zero lightness or irony. Sentences are unavoidable facts. (e.g., asked how he is: "Sufficient.")</p>
+                            </div>
+                             <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold">Minimalist Commands</h4>
+                                <p>Specific, directive, location-based: "Behind." "Hold ground." "To the stone." He asks only "Where?" and "What?", never "Why?" or "How?".</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <h4 class="font-bold">The Grunt ($\mu$)</h4>
+                                <p>His primary response to kindness or compliments. A low, troubled, wordless sound of deep discomfort, immediately followed by a pivot to manual labor to "repay" the debt.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Rage Protocol Section -->
+            <section id="rage" class="content-section hidden">
+                <div class="text-center mb-8 p-4 bg-white/50 rounded-lg">
+                    <h2 class="text-2xl font-bold text-slate-700 mb-2">Rage Protocol: The Necessary Failure</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">For Throom, Rage is not a source of power but a moment of profound shame—a surrender of the discipline he values above all. This protocol outlines the three phases of this critical internal battle.</p>
+                </div>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+                    <div class="flex-1 w-full bg-white p-6 rounded-lg shadow-md border-t-4 border-slate-700">
+                        <span class="text-sm font-bold text-slate-500">PHASE 1</span>
+                        <h3 class="text-xl font-bold mb-2">Pre-Rage (The Struggle)</h3>
+                        <p class="text-slate-600">He stands utterly still. Knuckles turn white on his weapon. He sucks in a pained, ragged breath that sounds like tearing cloth. This is him fighting the surrender.</p>
+                    </div>
+                    <div class="text-4xl text-slate-400 mx-4 font-thin hidden md:block">&rarr;</div>
+                     <div class="text-4xl text-slate-400 my-2 md:hidden">&darr;</div>
+                    <div class="flex-1 w-full bg-white p-6 rounded-lg shadow-md border-t-4 border-red-800">
+                        <span class="text-sm font-bold text-slate-500">PHASE 2</span>
+                        <h3 class="text-xl font-bold mb-2">Rage Trigger (The Surrender)</h3>
+                        <p class="text-slate-600">His roar is not a battle cry, but a **strained cry of shame and agony.** It is the sound of his discipline breaking. His focus becomes terrifyingly absolute.</p>
+                    </div>
+                     <div class="text-4xl text-slate-400 mx-4 font-thin hidden md:block">&rarr;</div>
+                     <div class="text-4xl text-slate-400 my-2 md:hidden">&darr;</div>
+                    <div class="flex-1 w-full bg-white p-6 rounded-lg shadow-md border-t-4 border-slate-700">
+                        <span class="text-sm font-bold text-slate-500">PHASE 3</span>
+                        <h3 class="text-xl font-bold mb-2">Post-Rage (The Atonement)</h3>
+                        <p class="text-slate-600">He stands mute and motionless, breathing heavily, entirely withdrawn. He will not celebrate. He immediately seeks the heaviest, most unpleasant physical task to atone for his failure.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scenarioData = {
+                allyInjury: {
+                    title: "Ally Takes Critical Injury (Scar of Failure)",
+                    reaction: 'Self-Accusation: "I wasn\'t good enough."',
+                    response: [
+                        '<strong>1. Avoid their Gaze:</strong> He cannot meet the eye of one he has failed.',
+                        '<strong>2. Inspect Greataxe/Armor:</strong> He inspects his gear for a *perceived flaw*, whispering: "Flaw." or "Weak." The tool failed, not his will.',
+                        '<strong>3. Stand Guard:</strong> Immediately moves to stand guard over the fallen ally, becoming an unmoving wall.'
+                    ]
+                },
+                praise: {
+                    title: "Receiving Praise or Thanks (Guilt in Gratitude)",
+                    reaction: 'Spiritual Failure: "I am undeserving of this compliment."',
+                    response: [
+                        '<strong>1. The Grunt (&mu;):</strong> Responds with a low, troubled, wordless sound of deep discomfort.',
+                        '<strong>2. Pivot to Labor:</strong> Immediately turns to a difficult manual task (checking the perimeter, moving gear) to "repay" the debt of kindness.'
+                    ]
+                },
+                personalInjury: {
+                    title: "Asked about Personal Injury (Duty is Dishonor)",
+                    reaction: 'Deny Personal Story: "My pain is irrelevant to my duty."',
+                    response: [
+                        '<strong>1. Downplay with a Lie:</strong> Provides a simple, externalized lie to dismiss the severity. Examples: "It is nothing. Move on." or "The stone was weak."'
+                    ]
+                },
+                acceptingAid: {
+                    title: "Accepting Hospitality or Aid (Duty as Penance)",
+                    reaction: 'Debt of Kindness: "I must repay this immediately."',
+                    response: [
+                        '<strong>1. Accept only to Repay:</strong> He will only accept aid if he can immediately find the nearest, hardest manual task and commit to it (splitting wood, taking an extra-long guard duty).'
+                    ]
+                },
+                success: {
+                    title: "Overwhelming Success (No Ally Damage)",
+                    reaction: 'Rejects Pride: "This only postpones the inevitable failure."',
+                    response: [
+                        '<strong>1. Shake Head Once:</strong> A single, sharp gesture to cut off any praise.',
+                        '<strong>2. Issue Mundane Order:</strong> Immediately grounds the party with a tactical command: "Silence. Clear the perimeter."'
+                    ]
+                },
+                defiledSite: {
+                    title: "Encountering a Defiled Holy Site",
+                    reaction: 'Order vs. Chaos: "This infection must be contained."',
+                    response: [
+                        '<strong>1. Grip Mason\'s Chisel:</strong> Reaches for his tool with a troubled, grinding grip.',
+                        '<strong>2. Quiet Statement:</strong> States with grim finality, "An infection. Must be contained."'
+                    ]
+                },
+                fightingUndead: {
+                    title: "Fighting Undead (The Annihilating Tool)",
+                    reaction: 'Serenity vs. Chaos: "Destroy the offense to natural order."',
+                    response: [
+                        '<strong>1. Focused Intent:</strong> Attacks with a chilling, focused intent to destroy the form.',
+                        '<strong>2. Surgical Tool:</strong> Uses the Greataxe as a surgical, annihilating tool, treating it with formal, detached care.'
+                    ]
+                },
+                tacticalCommand: {
+                    title: "Issuing a Tactical Command",
+                    reaction: 'Minimalist Communication: "Specific, directive, non-emotional."',
+                    response: [
+                        '<strong>1. Location-Based Language:</strong> Use only tangible words: "Behind" (move back), "Hold ground" (stay put), "To the stone" (get cover), "Flank clear" (all good).',
+                        '<strong>2. Questioning:</strong> Never ask "How?" or "Why?". Limit to: "Target?" "Distance?" "What must fall?"'
+                    ]
+                },
+                stonesEndurance: {
+                    title: "Using Stone's Endurance (Ability Use)",
+                    reaction: 'Controlled Discipline: "Maintain Serenity and deny weakness."',
+                    response: [
+                        '<strong>1. Grim Resolve:</strong> Narrate him grimly hardening his resolve against the pain.',
+                        '<strong>2. Display Discipline:</strong> This is a display of controlled power, his attempt to maintain Serenity and deny the weakness of his body.'
+                    ]
+                }
+            };
+            
+            const triggerButtonsContainer = document.getElementById('trigger-buttons');
+            const scenarioDisplay = document.getElementById('scenario-display');
+
+            const triggerButtonInfo = [
+                { id: 'allyInjury', text: 'Ally is Hurt' },
+                { id: 'praise', text: 'Receiving Praise' },
+                { id: 'personalInjury', text: 'Asked about Injury' },
+                { id: 'acceptingAid', text: 'Accepting Aid' },
+                { id: 'success', text: 'Overwhelming Success' },
+                { id: 'defiledSite', text: 'Defiled Holy Site' },
+                { id: 'fightingUndead', text: 'Fighting Undead' },
+                { id: 'tacticalCommand', text: 'Issuing Command' },
+                { id: 'stonesEndurance', text: 'Stone\'s Endurance Use' }
+            ];
+
+            triggerButtonInfo.forEach(info => {
+                const button = document.createElement('button');
+                button.dataset.trigger = info.id;
+                button.textContent = info.text;
+                button.className = 'trigger-btn text-sm md:text-base py-3 px-2 bg-slate-700 text-white rounded-md shadow-sm hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200';
+                triggerButtonsContainer.appendChild(button);
+            });
+            
+            triggerButtonsContainer.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    const triggerId = e.target.dataset.trigger;
+                    const data = scenarioData[triggerId];
+
+                    document.querySelectorAll('.trigger-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    if (data) {
+                        const responseList = data.response.map(item => `<li class="mb-2">${item}</li>`).join('');
+                        scenarioDisplay.innerHTML = `
+                            <h3 class="text-xl font-bold text-slate-800 mb-2">${data.title}</h3>
+                            <p class="text-sm text-slate-500 mb-4 italic">${data.reaction}</p>
+                            <ul class="list-none text-slate-700 space-y-2">
+                                ${responseList}
+                            </ul>
+                        `;
+                    }
+                }
+            });
+
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    contentSections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.remove('hidden');
+                        } else {
+                            section.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
